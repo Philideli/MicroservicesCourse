@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from sales import SalesRepository, Client, Order
+from sales_database import SalesRepository, Client, Order
 
 app = Flask('service1')
 
