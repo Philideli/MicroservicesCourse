@@ -69,7 +69,7 @@ def add_order():
     sales_repo.add_order(order)
     return jsonify({'message': 'Order added successfully'}), 200
 
-@app.route('/get/<int:order_id>', methods=['GET'])
+@app.route('/orders/get_by_id?<int:order_id>', methods=['GET'])
 def get_order(order_id):
     """ get order by id from database
         Args:
@@ -94,7 +94,7 @@ def get_all_orders():
     orders = [vars(order) for order in sales_repo.get_all_orders()]
     return jsonify(orders), 200
 
-@app.route('/clients/<int:client_id>/orders', methods=['GET'])
+@app.route('/orders/get_by_client?<int:client_id>/', methods=['GET'])
 def get_all_orders_for_client(client_id):
     """ get all orders made by the client from database
         Returns:
