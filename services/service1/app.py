@@ -1,90 +1,40 @@
 from flask import Flask, jsonify, request
-import sqlite3
+from sales import SalesRepository, Client, Order
 
-app = Flask(__name__)
+app = Flask('service1')
 
-class Client:
-    def __init__(self, id, name, email):
-        self.id = id
-        self.name = name
-        self.email = email
-
-class ClientRepository:
-    def __init__(self):
-        self.conn = sqlite3.connect('clients.db')
-        self.cursor = self.conn.cursor()
-        self.cursor.execute('CREATE TABLE IF NOT EXISTS clients (id INTEGER PRIMARY KEY, name TEXT, email TEXT)')
-    
-    def add(self, client):
-        self.cursor.execute('INSERT INTO clients (id, name, email) VALUES (?, ?, ?)', (client.id, client.name, client.email))
-        self.conn.commit()
-    
-    def get_all(self):
-        self.cursor.execute('SELECT id, name, email FROM clients')
-        rows = self.cursor.fetchall()
-        clients = [Client(*row) for row in rows]
-        return clients
-
-    def get_by_id(self, client_id):
-        self.cursor.execute("SELECT * FROM orders WHERE id=?", (client_id,))
-        client = self.cursor.fetchall()
-        if client is not None:
-            return client.to_dict()
-        else:
-            return None
-
-class Order:
-    def __init__(self, id, client_id, items):
-        self.id = id
-        self.client_id = client_id
-        self.items = items
-
-class OrderRepository:
-    def __init__(self):
-        self.conn = sqlite3.connect('orders.db')
-        self.cursor = self.conn.cursor()
-        self.cursor.execute('CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY, client_id INTEGER, items TEXT)')
-    
-    def add(self, order):
-        self.cursor.execute('INSERT INTO orders (id, client_id, items) VALUES (?, ?, ?)', (order.id, order.client_id, str(order.items)))
-        self.conn.commit()
-    
-    def get_all(self):
-        self.cursor.execute('SELECT id, client_id, items FROM orders')
-        rows = self.cursor.fetchall()
-        orders = [Order(*row) for row in rows]
-        return orders
-
-    def get_all_orders_for_client(self, client_id):
-        self.cursor.execute("SELECT * FROM orders WHERE client_id=?", (client_id,))
-        orders = self.cursor.fetchall()
-        return orders
-
-    def get_by_id(self, order_id):
-        self.cursor.execute("SELECT * FROM orders WHERE id=?", (order_id,))
-        order = self.cursor.fetchall()
-        if order is not None:
-            return order.to_dict()
-        else:
-            return None
-
-
-client_repo = ClientRepository()
-order_repo = OrderRepository()
+sales_repo = SalesRepository()
 
 @app.route('/clients/add', methods=['POST'])
 def add_client():
+    """ add new client to database
+        Args:
+            client (dict): with following fields
+                id (int): client id
+                name (str): client name
+                email (str): client email
+        Returns:
+            message (json): response message
+            response code
+    """
     client = request.get_json()
     if not client or 'id' not in client or 'name' not in client or 'email' not in client:
         return jsonify({'error': 'Invalid request'}), 400
     client = Client(client['id'], client['name'], client['email'])
-    client_repo.add(client)
+    sales_repo.add_client(client)
     
     return jsonify({'message': 'Client added successfully'}), 200
 
-@app.route('/get/<int:client_id>', methods=['GET'])
+@app.route('/clients/get_by_id?<int:client_id>', methods=['GET'])
 def get_client(client_id):
-    client = client_repo.get_by_id(client_id)
+    """ get client by id from database
+        Args:
+            client_id (str): client id
+        Returns:
+            client (json): client from database
+            response code
+    """
+    client = sales_repo.get_client_by_id(client_id)
     if client is not None:
         return jsonify(client), 200
     else:
@@ -92,21 +42,43 @@ def get_client(client_id):
 
 @app.route('/clients/getall', methods=['GET'])
 def get_all_clients():
-    clients = [vars(client) for client in client_repo.get_all()]
+    """ get all clients from database
+        Returns:
+            clients (json): all the retrieved clients from database
+            response code
+    """
+    clients = [vars(client) for client in sales_repo.get_all_clients()]
     return jsonify(clients), 200
 
 @app.route('/orders/add', methods=['POST'])
 def add_order():
+    """ add new order to database
+        Args:
+            order (dict): with following fields
+                id (int): order id
+                client_id (int): client id
+                items (str): items from the order
+        Returns:
+            message (json): response message
+            response code
+    """
     order = request.get_json()
     if not order or 'id' not in order or 'client_id' not in order or 'items' not in order:
         return jsonify({'error': 'Invalid request'}), 400
     order = Order(order['id'], order['client_id'], order['items'])
-    order_repo.add(order)
+    sales_repo.add_order(order)
     return jsonify({'message': 'Order added successfully'}), 200
 
 @app.route('/get/<int:order_id>', methods=['GET'])
 def get_order(order_id):
-    order = order_repo.get_by_id(order_id)
+    """ get order by id from database
+        Args:
+            order_id (str): order id
+        Returns:
+            order (json): order from database
+            response code
+    """
+    order = sales_repo.get_order_by_id(order_id)
     if order is not None:
         return jsonify(order), 200
     else:
@@ -114,13 +86,23 @@ def get_order(order_id):
 
 @app.route('/orders/getall', methods=['GET'])
 def get_all_orders():
-    orders = [vars(order) for order in order_repo.get_all()]
+    """ get all orders from database
+        Returns:
+            orders (json): all the retrieved orders from database
+            response code
+    """
+    orders = [vars(order) for order in sales_repo.get_all_orders()]
     return jsonify(orders), 200
 
 @app.route('/clients/<int:client_id>/orders', methods=['GET'])
 def get_all_orders_for_client(client_id):
+    """ get all orders made by the client from database
+        Returns:
+            orders (json): all the orders clients from database
+            response code
+    """
     try:
-        orders = [vars(order) for order in order_repo.get_all_orders_for_client(client_id)]
+        orders = [vars(order) for order in sales_repo.get_all_orders_for_client(client_id)]
         if orders:
             return jsonify(orders), 200
         else:
