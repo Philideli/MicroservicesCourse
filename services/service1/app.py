@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, g
 import sqlite3
 from sales_database import Client, Order
+from mock_input import clients, orders
 
 app = Flask('service1')
 
@@ -38,7 +39,7 @@ def add_client():
     return jsonify({'message': 'Client added successfully'}), 200
 
 @app.route('/clients/getbyid', methods=['GET'])
-def get_client(client_id):
+def get_client():
     """ get client by id from database
         Args:
             client_id (str): client id
@@ -50,10 +51,11 @@ def get_client(client_id):
     client_id = args.to_dict()['clientId']
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM orders WHERE id=?", (client_id,))
+    cursor.execute("SELECT * FROM clients WHERE id=?", (client_id,))
     client = cursor.fetchall()
     if client:
-        client = Client(*client)
+        clients = [Client(*row) for row in client]
+        clients = [vars(client) for client in clients]
         return jsonify(client), 200
     else:
         return jsonify({'error': 'Client not found'}), 404
@@ -111,8 +113,9 @@ def get_order():
     cursor.execute("SELECT * FROM orders WHERE id=?", (order_id,))
     order = cursor.fetchall()
     if order:
-        orders = Order(*order)
-        return jsonify(order), 200
+        orders = [Order(*row) for row in order]
+        orders = [vars(order) for order in orders]
+        return jsonify(orders), 200
     else:
         return jsonify({'error': 'Order not found'}), 404
 
