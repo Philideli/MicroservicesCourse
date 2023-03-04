@@ -1,15 +1,10 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim-buster
+FROM python:3.8-slim-buster
 
-# Set the working directory to /service1
-WORKDIR /service/service1
+COPY ./requirements.txt /app/requirements.txt
+RUN pip3 install -r requirements.txt
 
-# Copy the current directory contents into the container at /app
-COPY . /service/service1
+WORKDIR /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
-
-EXPOSE 8080
-COPY --from=service_builder /services/service1/app.py .
-CMD ["./app"]
+COPY . /app
+RUN python3 /app/init_database.py
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
