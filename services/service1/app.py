@@ -42,7 +42,7 @@ def add_client():
 def get_client():
     """ get client by id from database
         Args:
-            client_id (str): client id
+            clientId (str): client id
         Returns:
             client (json): client from database
             response code
