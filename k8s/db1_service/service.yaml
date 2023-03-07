@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: db1-service
 spec:
-  type: NodePort 
+  type: NodePort  # Don't forget to change ClusterIP to NodePort
   selector:
     app: db1
   ports:
     - port: 8080
       targetPort: 5000
-      nodePort: 31317
+      nodePort: 31317   # Service's port which is used in code
