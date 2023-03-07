@@ -1,16 +1,15 @@
 import asyncio
 import logging
 
-from .consts import dp, bot
-from .routers import main_router, admin_router
-
-logging.basicConfig(level=logging.WARNING)
+from consts import dp, bot
+from routers import main_router, admin_router
+import routing
 
 
 async def main():
 
-    dp.include_router(admin_router)
     dp.include_router(main_router)
+    main_router.include_router(admin_router)
 
     await bot.delete_webhook(drop_pending_updates=True)
 
@@ -18,6 +17,7 @@ async def main():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.WARNING)
     asyncio.run(main())
 
 # TODO

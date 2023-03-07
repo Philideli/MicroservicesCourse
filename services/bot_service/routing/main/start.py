@@ -1,13 +1,11 @@
 from aiogram import types
 from aiogram.filters import Command
-from aiogram.fsm.context import FSMContext
 
 from routers import main_router
 from consts import ADMINS
 
 @main_router.message(Command("start"))
-async def start(message: types.Message, state: FSMContext) -> None:
-    await state.clear()
+async def start(message: types.Message) -> None:
     msg_text = "Вітаємо вас у каталозі магазину квітів Мікрон\n" \
                "\n" \
                "/start - повідомлення із списком команд\n" \

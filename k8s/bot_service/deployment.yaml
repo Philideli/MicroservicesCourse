@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bot-deployment
+  labels:
+    app: telegram-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telegram-bot
+  template:
+    metadata:
+     labels:
+       app: telegram-bot
+    spec:
+      containers:
+        - name: telegram-bot
+          image: sosnoviybor/microservices-service-bot
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 81

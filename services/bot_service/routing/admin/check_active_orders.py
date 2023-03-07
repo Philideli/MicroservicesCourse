@@ -16,7 +16,7 @@ async def check_active_orders(message: types.Message) -> None:
     response = requests.post(adress, data=data)
     if response.status_code == 200:
         data = response.json()
+        msg_text = "e\n"
         for k in data.keys():
-            print(f"'{k}': {data[k]}")
-    msg_text = "This command is currently WIP"
+            msg_text += f"'{k}': {data[k]}"
     await message.answer(msg_text)
