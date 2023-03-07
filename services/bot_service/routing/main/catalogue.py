@@ -4,14 +4,13 @@ from aiogram.fsm.context import FSMContext
 import requests
 
 from routers import main_router
-from consts import SERVICE_URLS
 
 @main_router.message(Command("catalogue"))
 async def catalogue(message: types.Message) -> None:
     # TODO
     # Проверить, будет ли обнуляться 
     # await state.clear()
-    adress = f'{SERVICE_URLS[1]}/...'
+    adress = ""
     data = {
         ...
     }

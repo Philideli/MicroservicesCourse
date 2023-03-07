@@ -9,11 +9,6 @@ ADMINS = [
     448565207   # @boryaxta
 ]
 
-BASE_URL = "http://localhost"
-SERVICE_PORTS = [
-    8080,   # Users and orders
-    0000    # Catalogue
-]
-SERVICE_URLS = []
-for port in SERVICE_PORTS:
-    SERVICE_URLS.append(f"{BASE_URL}:{port}")
+MINIKUBE_IP = "192.168.49.2"
+DB1_ADRESS = f"http://{MINIKUBE_IP}:31317"
+DB2_ADRESS = f"http://{MINIKUBE_IP}:xxxxx"

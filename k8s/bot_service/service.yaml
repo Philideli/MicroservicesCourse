@@ -5,7 +5,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: telegram-bot
+    app: bot-service
   ports:
     - port: 80
-      targetPort: 81
+      targetPort: 8080

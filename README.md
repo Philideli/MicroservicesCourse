@@ -1,2 +1,28 @@
 # Лабораторні роботи з курсу "Розробка мікросервісів"
-## Завдання знаходяться [тут](https://github.com/andrii-babiichuk/microservices)
+### Завдання знаходяться [тут](https://github.com/andrii-babiichuk/microservices)
+
+## <p><p>Послідовність дій:
+1. Встановити docker desktop, kubernetes та minikube2
+2. Заванатижити kubectl та закинути його в корінь проекту для зручності
+3. Запустити minikube
+```
+minikube start --vm-driver=docker
+```
+4. Створити docker image свого сервісу
+```
+docker build -t [назва імеджу] [шлях в папку з докерфайлом]
+```
+5. Вказати назву свого імеджу в `deployment.yaml`
+```yaml
+  containers:
+    image: [назва імеджу]
+```
+6. Завантажити локальний імедж до minikube. Це займе хвилинку-другу та добре навантажить комп'ютер
+```
+minikube image load [назва імеджу]
+```
+7. Запустити сервіс
+```
+kubectl apply -f [папка сервісу]
+```
+### <i>Повторити кроки 4-7 для усіх сервісів у мікросервісі</i>

@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: db1
   annotations:
-    kubernetes.io/ingress.class: "bot"
+    kubernetes.io/ingress.class: "db1"
 spec:
   rules:
     - http:
         paths:
-          - path: /bot
+          - path: /db1
             pathType: "Prefix"
             backend:
               service:
-                name: bot-service
+                name: db1-service
                 port:
-                  number: 80
+                  number: 8080

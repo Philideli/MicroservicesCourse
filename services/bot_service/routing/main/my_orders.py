@@ -4,12 +4,11 @@ from aiogram.fsm.context import FSMContext
 import requests
 
 from routers import main_router
-from consts import SERVICE_URLS
 
 @main_router.message(Command("my_orders"))
 async def my_orders(message: types.Message, state: FSMContext) -> None:
     await state.clear()
-    adress = f'{SERVICE_URLS[0]}/clients/add'
+    adress = ""
     data = {
         "clientId": str(message.from_user.id)
     }

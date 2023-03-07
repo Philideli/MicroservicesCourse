@@ -1,0 +1,16 @@
+### Kill all deployments and services ###
+.\kubectl.exe delete deployment db1-deployment
+.\kubectl.exe delete service db1-service
+.\kubectl.exe delete deployment bot-deployment
+.\kubectl.exe delete service bot-service
+
+
+### Launch all deployments and services ###
+.\kubectl.exe apply -f .\k8s\db1_service\
+.\kubectl.exe apply -f .\k8s\bot_service\
+
+
+### Rebuild bot image for Minikube ###
+docker build -t bot-image .\services\bot_service\
+minikube.exe image rm bot-image
+minikube.exe image load bot-image

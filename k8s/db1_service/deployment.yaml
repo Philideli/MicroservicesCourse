@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bot-deployment
+  name: db1-deployment
   labels:
-    app: bot
+    app: db1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bot
+      app: db1
   template:
     metadata:
      labels:
-       app: bot
+       app: db1
     spec:
       containers:
-        - name: bot
-          image: bot-image
+        - name: db1
+          image: db1-image
           imagePullPolicy: Never
           ports:
-            - containerPort: 80
+            - containerPort: 8080
