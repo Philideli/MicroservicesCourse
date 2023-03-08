@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db2-deployment
+  labels:
+    app: db2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db2
+  template:
+    metadata:
+     labels:
+       app: db2
+    spec:
+      containers:
+        - name: db2
+          image: db2-image
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080

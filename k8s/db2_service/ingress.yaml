@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: db2
+  annotations:
+    kubernetes.io/ingress.class: "db2"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /db2
+            pathType: "Prefix"
+            backend:
+              service:
+                name: db2-service
+                port:
+                  number: 8080
