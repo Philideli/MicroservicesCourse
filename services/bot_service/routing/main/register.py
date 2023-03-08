@@ -6,7 +6,7 @@ import requests
 from re import match
 
 from routers import main_router
-from consts import DB1_ADRESS
+from consts import Adresses
 
 class EmailInput(StatesGroup):
     email = State()
@@ -20,23 +20,30 @@ async def register(message: types.Message, state: FSMContext) -> None:
 
 @main_router.message(EmailInput.email)
 async def email_recieved(message: types.Message, state: FSMContext):
+    # email regex
     regex = r"([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+"
     if match(regex, message.text):
-        email = await state.get_data(EmailInput.email)
         await state.clear()
-        adress = f"{DB1_ADRESS}/clients/add"
+
+        email = message.text
+        adress = Adresses.Clients.add
         data = {
             "id": str(message.from_user.id),
             "name": message.from_user.username,
             "email": email
         }
-        status = status = requests.post(adress, data=data).status_code
+        status = requests.post(adress, json=data).status_code
         
         if status == 200:
-            msg_text = "Все, ми вас успішно додали до бази користувачів. Насолоджуйтесь нашими послугами :)"
+            # Successfully added user to the DB
+            msg_text = f"Все, ми вас ({email}) успішно додали до бази користувачів. " \
+                        "Насолоджуйтесь нашими послугами :)"
         else:
-            msg_text = f"Відбулась помилка ({status}) при додаванні вас до Бази Даних. Повторіть спробу або зверніться до адміністратора боту"
+            # Failed to add user to DB for some reason
+            msg_text = f"Відбулась помилка ({status}) при додаванні вас до Бази Даних. " \
+                        "Повторіть спробу або зверніться до адміністратора боту"
     else:
+        # Wrong input
         msg_text = "Ви ввели недійсну електронну скриньку\n" \
                    "\n" \
                    "Для відміни дії скористайтесь /cancel"

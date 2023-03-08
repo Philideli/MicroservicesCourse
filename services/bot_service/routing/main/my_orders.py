@@ -1,24 +1,35 @@
 from aiogram import types
 from aiogram.filters import Command
-from aiogram.fsm.context import FSMContext
 import requests
 
 from routers import main_router
+from consts import Adresses
 
 @main_router.message(Command("my_orders"))
-async def my_orders(message: types.Message, state: FSMContext) -> None:
-    await state.clear()
-    adress = ""
-    data = {
+async def my_orders(message: types.Message) -> None:
+    adress = Adresses.Orders.get_by_client
+    request_data = {
         "clientId": str(message.from_user.id)
     }
-    response = requests.post(adress, data=data)
+    response = requests.get(adress, json=request_data)
+    
     if response.status_code == 200:
-        data = response.json()
-        msg_text = "e\n"
-        for k in data.keys():
-            msg_text += f"'{k}': {data[k]}"
-            # TODO 
-            # Понять, как правильно парсить запрос и в зависимости от этого генерить сообщение
-            # Здесь будет просто 1 сообщение со всеми заказами пользователя
+        order_data = response.json()
+
+        msg_text = f"Замовлення користувача {message.from_user.username}:\n"
+        i = 1
+        for order in order_data:
+            adress = Adresses.Flowers.get_by_id
+            request_data = {
+                "flowerId": str(order["item_id"])
+            }
+            response = requests.get(adress, json=request_data)
+            
+            if response.status_code == 200:
+                flower_data = response.json()[0]
+                msg_text += f"{i}. {flower_data[1]} x{order['amount']}\n"
+            i+=1
+    else:
+        msg_text = f"Виникла помилка ({response.status_code}) при отриманні ваших замовлень. " \
+                    "Повторіть спробу або зверніться до адміністратора боту"
     await message.answer(msg_text)

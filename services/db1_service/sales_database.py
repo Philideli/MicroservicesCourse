@@ -8,7 +8,7 @@ class Client:
         self.email = email
 
 class Order:
-    def __init__(self, id, client_id, items):
-        self.id = id
+    def __init__(self, client_id, item_id, amount):
         self.client_id = client_id
-        self.items = items
+        self.item_id = item_id
+        self.amount = amount

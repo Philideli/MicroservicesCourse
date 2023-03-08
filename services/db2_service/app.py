@@ -17,12 +17,11 @@ def start_point():
 @app.route('/flowers/getbyid', methods=['GET'])
 def get_flower_by_id():
     """
-    :id (str): flower id
+    :flowerId (str): flower id
     :return 1: flower info (json)
     :return 2: error message (json)
     """
-    args = request.args
-    flower_id = args.to_dict()['flowerId']
+    flower_id = request.get_json()['flowerId']
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM flower WHERE id=?", (flower_id,))
@@ -41,8 +40,7 @@ def get_flower_by_name():
     :return 1: flower info (json)
     :return 2: error message (json)
     """
-    args = request.args
-    flowerName = args.to_dict()['flowerName']
+    flowerName = request.get_json()['flowerName']
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM flower WHERE name=?", (flowerName,))

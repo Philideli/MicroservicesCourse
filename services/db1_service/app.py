@@ -80,9 +80,9 @@ def add_order():
     """ add new order to database
         Args:
             order (dict): with following fields
-                id (int): order id
                 client_id (int): client id
-                items (str): items from the order
+                item_id (int): item from the order
+                amount (int): amount of flowers
         Returns:
             message (json): response message
             response code
@@ -90,10 +90,11 @@ def add_order():
     order = request.get_json()
     db = get_db_connection()
     cursor = db.cursor()
-    if not order or 'id' not in order or 'client_id' not in order or 'items' not in order:
+    if not order or 'client_id' not in order or 'item_id' not in order or 'amount' not in order:
         return jsonify({'error': 'Invalid request'}), 400
-    order = Order(order['id'], order['client_id'], order['items'])
-    cursor.execute('INSERT INTO orders (id, client_id, items) VALUES (?, ?, ?)', (order.id, order.client_id, str(order.items)))
+    order = Order(order['client_id'],order['item_id'],order['amount'])
+    cursor.execute('INSERT INTO orders (client_id, item_id, amount) VALUES (?, ?, ?)',
+                   (order.client_id, order.item_id, order.amount))
     db.commit()
     return jsonify({'message': 'Order added successfully'}), 200
 
@@ -134,28 +135,27 @@ def get_all_orders():
     orders = [vars(order) for order in orders]
     return jsonify(orders), 200
 
-@app.route('/orders/getbyclient/', methods=['GET'])
+@app.route('/orders/getbyclient', methods=['GET'])
 def get_all_orders_for_client():
     """ get all orders made by the client from database
         Returns:
             orders (json): all the orders clients from database
             response code
     """
-    args = request.args
-    client_id = args.to_dict()['clientId']
+    client_id = request.get_json()['clientId']
     db = get_db_connection()
     cursor = db.cursor()
-    try:
-        cursor.execute("SELECT * FROM orders WHERE client_id=?", (client_id,))
-        rows = cursor.fetchall()
-        orders = [Order(*row) for row in rows]
-        orders = [vars(order) for order in orders]
-        if orders:
-            return jsonify(orders), 200
-        else:
-            return jsonify({'message': f'No orders found for client {client_id}'}), 200
-    except:
-        return jsonify({'error': 'An error occurred while retrieving the orders'}), 500
+    # try:
+    cursor.execute("SELECT client_id, item_id, amount FROM orders WHERE client_id=?", (client_id,))
+    rows = cursor.fetchall()
+    orders = [Order(*row) for row in rows]
+    orders = [vars(order) for order in orders]
+    if orders:
+        return jsonify(orders), 200
+    else:
+        return jsonify({'message': f'No orders found for client {client_id}'}), 200
+    # except:
+    #     return jsonify({'error': 'An error occurred while retrieving the orders'}), 500
 
 if __name__ == '__main__':
     app.run(port=8080)
