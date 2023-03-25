@@ -1,13 +1,16 @@
+import pathlib
 from flask import Flask, jsonify, request, g
 import sqlite3
 from flower import Flower
+from pathlib import Path
+
 
 app = Flask('service2')
 
 def get_db_connection():
     conn = getattr(g,'_database',None)
     if conn is None:
-        conn = g._database = sqlite3.connect('flowers.db')
+        conn = g._database = sqlite3.connect('flowers2.db')
     return conn
 
 @app.route('/')
@@ -17,11 +20,12 @@ def start_point():
 @app.route('/flowers/getbyid', methods=['GET'])
 def get_flower_by_id():
     """
-    :flowerId (str): flower id
+    :id (str): flower id
     :return 1: flower info (json)
     :return 2: error message (json)
     """
-    flower_id = request.get_json()['flowerId']
+    args = request.args
+    flower_id = args.to_dict()['flowerId']
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM flower WHERE id=?", (flower_id,))
@@ -40,7 +44,8 @@ def get_flower_by_name():
     :return 1: flower info (json)
     :return 2: error message (json)
     """
-    flowerName = request.get_json()['flowerName']
+    args = request.args
+    flowerName = args.to_dict()['flowerName']
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM flower WHERE name=?", (flowerName,))
@@ -64,8 +69,8 @@ def add_flower():
     cursor = db.cursor()
     if not flower or 'id' not in flower or 'name' not in flower or 'price'<=0:
         return jsonify({'error': 'Invalid request'}), 400
-    flower = Flower(flower['id'], flower['name'], flower['color'], flower['climate'], flower['price'])
-    cursor.execute('INSERT INTO flower (id, name, color, climate, price) VALUES (?, ?, ?, ?, ?)', (flower.id, flower.name, flower.color, flower.climate, flower.price))
+    flower = Flower(flower['id'], flower['name'], flower['color'], flower['climate'], flower['price'], flower['image'])
+    cursor.execute('INSERT INTO flower (id, name, color, climate, price) VALUES (?, ?, ?, ?, ?)', (flower.id, flower.name, flower.color, flower.climate, flower.price, flower.image))
     db.commit()
     
     return jsonify({'message': 'Flower added successfully'}), 200
@@ -77,11 +82,34 @@ def get_all_flowers():
     """
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute('SELECT * FROM flower')
+    cursor.execute('SELECT id, name FROM flower')
     rows = cursor.fetchall()
     flowers = [Flower(*row) for row in rows]
     flowers = [vars(flower) for flower in flowers]
     return jsonify(flowers), 200
+
+@app.route('/flowers/addimages', methods=['GET']) # POST?
+def add_images():
+    """
+    adds image paths to database if image name matches flower name
+    :returns: success message (json)
+    """
+    db = get_db_connection()
+    cursor = db.cursor()
+
+    #source = request.get_json() ?
+    source='C:\\Users\\Nestor\\Desktop\\flowers' # path to folder with images (Name.jpg)
+    """
+    wExt=os.listdir(source)
+    noExt=[x.split('.')[0] for x in l]
+    """
+    namepaths = []
+    for filepath in pathlib.Path(source).glob('**/*'):
+        namepaths.append(filepath.absolute())
+    for path in namepaths:
+        cursor.execute('update flower set image="'+str(path)+'" where name="'+Path(path).stem+'"')
+        db.commit()
+    return jsonify('images added'), 200
 
 if __name__ == '__main__':
     app.run(port=8080)
