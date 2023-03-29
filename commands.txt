@@ -14,8 +14,18 @@ minikube start --vm-driver=docker
 docker build -t bot-image .\services\bot_service\
 minikube.exe image load bot-image
 
+for mac
+docker build -t bot-image ./services/bot_service/
+docker build -t db1-image ./services/db1_service/
+docker build -t db2-image ./services/db2_service/
+minikube image load bot-image
 
 ### Launch all deployments and services ###
 .\kubectl.exe apply -f .\k8s\db1_service\
 .\kubectl.exe apply -f .\k8s\db2_service\
 .\kubectl.exe apply -f .\k8s\bot_service\
+
+for mac
+kubectl apply -f ./k8s/db1_service/
+kubectl apply -f ./k8s/db2_service/
+kubectl apply -f ./k8s/bot_service/

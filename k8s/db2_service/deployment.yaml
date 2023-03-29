@@ -16,14 +16,11 @@ spec:
     spec:
       initContainers:
         - name: run-migrations
-          image: db2-migrations:0.1
-          command: ["migrate", "-path", "/migrations", "-database",  "$(SQLITE_DB_PATH)", "up"]
+          image: phillidelli/db2-migrations
+          command: ["migrate", "-path", "/migrations", "-database",  "$(POSTGRESQL_URL)"]
           env:
-            - name: SQLITE_DB_PATH
-              value: "/flowers.db"
-          volumeMounts:
-            - name: migrations
-              mountPath: /migrations
+            - name: POSTGRESQL_URL
+              value: "postgres://demo:demo@postgres:5432/demo?sslmode=disable"
       containers:
         - name: db2
           image: db2-image
