@@ -1,18 +1,20 @@
 from flask import Flask, jsonify, request, g
-import sqlite3
+import psycopg2
 from flower import Flower
 
 app = Flask('service2')
 
 def get_db_connection():
-    conn = getattr(g,'_database',None)
-    if conn is None:
-        conn = g._database = sqlite3.connect('flowers2.db')
+    conn = psycopg2.connect(
+        database="flowers", user='ZGVtbw==', password='ZGVtbw==', host='localhost', port='5432'
+    )
     return conn
+
 
 @app.route('/')
 def start_point():
     return "Start service 2 for flowers"
+
 
 @app.route('/flowers/getbyid', methods=['GET'])
 def get_flower_by_id():
@@ -34,6 +36,7 @@ def get_flower_by_id():
     else:
         return jsonify({'error': 'Flower not found'}), 404
 
+
 @app.route('/flowers/getbyname', methods=['GET'])
 def get_flower_by_name():
     """
@@ -45,7 +48,7 @@ def get_flower_by_name():
     flowerName = args.to_dict()['flowerName']
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM flower WHERE name=?", (flowerName,))
+    cursor.execute('SELECT * FROM flower WHERE "name"=?', (flowerName,))
     flower = cursor.fetchall()
     if flower:
         flowers = [Flower(*row) for row in flower]
@@ -53,6 +56,7 @@ def get_flower_by_name():
         return jsonify(flower), 200
     else:
         return jsonify({'error': 'Flower not found'}), 404
+
 
 @app.route('/flowers/add', methods=['POST'])
 def add_flower():
@@ -64,13 +68,16 @@ def add_flower():
     flower = request.get_json()
     db = get_db_connection()
     cursor = db.cursor()
-    if not flower or 'id' not in flower or 'name' not in flower or 'price'<=0:
+    if not flower or 'id' not in flower or 'name' not in flower or 'price' <= 0:
         return jsonify({'error': 'Invalid request'}), 400
-    flower = Flower(flower['id'], flower['name'], flower['color'], flower['climate'], flower['price'], flower['image'])
-    cursor.execute('INSERT INTO flower (id, name, color, climate, price) VALUES (?, ?, ?, ?, ?, ?)', (flower.id, flower.name, flower.color, flower.climate, flower.price, flower.image))
+    flower = Flower(flower['id'], flower['name'], flower['color'],
+                    flower['climate'], flower['price'], flower['image'])
+    cursor.execute('INSERT INTO flower (id, "name", color, climate, price) VALUES (?, ?, ?, ?, ?, ?)',
+                   (flower.id, flower.name, flower.color, flower.climate, flower.price, flower.image))
     db.commit()
-    
+
     return jsonify({'message': 'Flower added successfully'}), 200
+
 
 @app.route('/flowers/getall', methods=['GET'])
 def get_all_flowers():
@@ -79,11 +86,12 @@ def get_all_flowers():
     """
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute('SELECT id, name FROM flower')
+    cursor.execute('SELECT id, "name" FROM flower')
     rows = cursor.fetchall()
     flowers = [Flower(*row) for row in rows]
     flowers = [vars(flower) for flower in flowers]
     return jsonify(flowers), 200
+
 
 if __name__ == '__main__':
     app.run(port=8080)
