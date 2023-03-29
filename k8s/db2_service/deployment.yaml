@@ -14,6 +14,16 @@ spec:
      labels:
        app: db2
     spec:
+      initContainers:
+        - name: run-migrations
+          image: db2-migrations:0.1
+          command: ["migrate", "-path", "/migrations", "-database",  "$(SQLITE_DB_PATH)", "up"]
+          env:
+            - name: SQLITE_DB_PATH
+              value: "/flowers.db"
+          volumeMounts:
+            - name: migrations
+              mountPath: /migrations
       containers:
         - name: db2
           image: db2-image
