@@ -21,13 +21,17 @@ async def my_orders(message: types.Message) -> None:
         for order in order_data:
             adress = Adresses.Flowers.get_by_id
             request_data = {
-                "flowerId": str(order["item_id"])
+                "id": str(order["item_id"])
             }
             response = requests.get(adress, json=request_data)
             
             if response.status_code == 200:
                 flower_data = response.json()[0]
                 msg_text += f"{i}. {flower_data[1]} x{order['amount']}\n"
+            else:
+                msg_text = f"Виникла помилка ({response.status_code}) при отриманні ваших замовлень. " \
+                            "Повторіть спробу або зверніться до адміністратора боту"
+                break
             i+=1
     else:
         msg_text = f"Виникла помилка ({response.status_code}) при отриманні ваших замовлень. " \

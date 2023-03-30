@@ -69,9 +69,9 @@ async def amount_recieved(message: types.Message, state: FSMContext):
             "item_id": str(state_data["item_id"]),
             "amount": str(message.text)
         }
-        status = requests.post(adress, json=data).status_code
+        response = requests.post(adress, json=data)
         
-        if status == 200:
+        if response.status_code == 200:
             # Successfully added user to the DB
             msg_text = f"{message.text} {state_data['item_name']} було успішно замовлено. " \
                         "Сподіваємося, ви й надалі будете купляти наші квіти!\n" \
@@ -79,7 +79,7 @@ async def amount_recieved(message: types.Message, state: FSMContext):
                         "Список ваших замовлень можна переглянути у /my_orders"
         else:
             # Failed to add user to DB for some reason
-            msg_text = f"Відбулась помилка ({status}) при створенні замовлення. " \
+            msg_text = f"Відбулась помилка ({response.status_code}) при створенні замовлення. " \
                         "Повторіть спробу або зверніться до адміністратора боту"
     else:
         # Wrong input
