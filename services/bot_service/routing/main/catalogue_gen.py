@@ -18,17 +18,13 @@ async def gen_catalogue(message:types.Message, page:int):
                 # Чем ближе дедлайн, тем больше костылей
                 i-=1
                 break
-            # flower = { climate, color, id, name, price }
+            # flower = { climate, color, id, name, price, image }
             flower = data[i]
             msg_text += f"\n{i+1}. {flower['name']}, коштує {flower['price']}$"
             builder.button(
-                text=INT2EMOJI[i%10+1], callback_data=catalogue.CatalogueCallbackFactory(
-                    climate=flower["climate"],
-                    id=flower["id"],
-                    name=flower["name"],
-                    price=flower["price"]
-                    )
-                )
+                text=INT2EMOJI[i%10+1],
+                callback_data=catalogue.CatalogueCallbackFactory(flower_id=flower["id"])
+            )
         # Backwards button
         if page == 1:
             builder.button(text="⬅️", callback_data="a")
@@ -39,7 +35,7 @@ async def gen_catalogue(message:types.Message, page:int):
                 )
             )
         # Forward button
-        if page*10 > len(data):
+        if page*10 >= len(data):
             builder.button(text="➡️", callback_data="a")
         else:
             builder.button(

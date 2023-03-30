@@ -32,16 +32,30 @@ async def view_flower(
         callback_data: catalogue.CatalogueCallbackFactory,
         state: FSMContext
 ):
-    msg_text = f"Квітка {callback_data.name}. Найкраще вічуває себе у кліматі {callback_data.climate}\n" \
-               f"Коштує {callback_data.price}$. Скільки ви хочете придбати?\n" \
-                "\n"\
-                "Для відміни дії скористайтесь /cancel"
-    await callback.message.answer(msg_text)
-    await state.update_data(
-        item_id=callback_data.id,
-        item_name=callback_data.name
-    )
-    await state.set_state(AmountInput.amount)
+    adress = Adresses.Flowers.get_by_id
+    data = {
+        "id": str(callback_data.flower_id)
+    }
+    response = requests.get(adress, json=data)
+
+    if response.status_code == 200:
+        # for whatever fucking reason it returns list instead of dict
+        # [id, name, colors, climate, price, image]
+        flower = response.json()[0]
+        msg_text = f"Квітка {flower[1]}. Найкраще вічуває себе у кліматі {flower[3]}\n" \
+                   f"Коштує {flower[4]}$. Скільки ви хочете придбати?\n" \
+                    "\n"\
+                    "Для відміни дії скористайтесь /cancel"
+        await callback.message.answer_photo(flower[5], caption=msg_text)
+        await state.update_data(
+            item_id=flower[0],
+            item_name=flower[1]
+        )
+        await state.set_state(AmountInput.amount)
+    else:
+        msg_text = f"Відбулась помилка ({response.status_code}) при отриманні даних для каталогу. " \
+                    "Повторіть спробу або зверніться до адміністратора боту"
+        return await callback.message.answer(msg_text)
 
 @main_router.message(AmountInput.amount)
 async def amount_recieved(message: types.Message, state: FSMContext):

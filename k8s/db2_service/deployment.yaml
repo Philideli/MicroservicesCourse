@@ -16,14 +16,23 @@ spec:
     spec:
       initContainers:
         - name: run-migrations
-          image: phillidelli/db2-migrations
-          command: ["migrate", "-path", "/migrations", "-database",  "$(POSTGRESQL_URL)"]
+          image: sosnoviybor/microsevices-migration
+          command: [
+            "migrate", "-path", "/migrations", "-database", "$(POSTGRESQL_URL)", "goto", "$(VERSION)"
+          ]
           env:
             - name: POSTGRESQL_URL
-              value: "postgres://demo:demo@postgres:5432/demo?sslmode=disable"
+              value: "postgres://demo:demo@postgres:5432/flowers?sslmode=disable"
+            - name: VERSION
+              value: "000004"
       containers:
         - name: db2
           image: db2-image
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: db2-config
+            - secretRef:
+                name: db2-secret

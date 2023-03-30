@@ -6,7 +6,7 @@ app = Flask('service2')
 
 def get_db_connection():
     conn = psycopg2.connect(
-        database="flowers", user='ZGVtbw==', password='ZGVtbw==', host='localhost', port='5432'
+        database="flowers", user='demo', password='demo', host="postgres", port='5432'
     )
     return conn
 
@@ -23,11 +23,10 @@ def get_flower_by_id():
     :return 1: flower info (json)
     :return 2: error message (json)
     """
-    args = request.args
-    flower_id = args.to_dict()['flowerId']
+    flower_id = request.get_json()['id']
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM flower WHERE id=?", (flower_id,))
+    cursor.execute(f'SELECT id, "name", color, climate, price, image FROM flower WHERE id={flower_id}')
     flower = cursor.fetchall()
     if flower:
         flowers = [Flower(*row) for row in flower]
@@ -86,7 +85,7 @@ def get_all_flowers():
     """
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute('SELECT id, "name" FROM flower')
+    cursor.execute('SELECT id, name, color, climate, price, image FROM flower')
     rows = cursor.fetchall()
     flowers = [Flower(*row) for row in rows]
     flowers = [vars(flower) for flower in flowers]
