@@ -1,0 +1,15 @@
+image:
+  repository: sosnoviybor
+  name: microsevices-bot  # fockin typo
+  tag: latest
+
+service:
+  ports:
+    - port: 8080
+      targetPort: 5000
+      nodePort: 31316   # Service's port which is used in code
+
+ingress:
+  path: /
+  class: "bot"
+  port: http

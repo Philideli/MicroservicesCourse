@@ -29,6 +29,10 @@ class Adresses:
         get_by_id = DB2_ADRESS + "/flowers/getbyid"
         get_by_name = DB2_ADRESS + "/flowers/getbyname"
         get_all = DB2_ADRESS + "/flowers/getall"
+    
+    class Tables:
+        db1 = None
+        db2 = DB2_ADRESS + "/tables"
 
 INT2EMOJI = [
     '0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'

@@ -16,5 +16,5 @@ async def start(message: types.Message) -> None:
     if message.from_user.id in ADMINS:
         msg_text += "\n\n" \
                     "### Команди адміністратора ###\n" \
-                    "Поки ще не створили :р"
+                    "/tables_db2 - перегляд таблиць у сервісі db2"
     await message.answer(msg_text)

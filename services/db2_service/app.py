@@ -92,5 +92,17 @@ def get_all_flowers():
     return jsonify(flowers), 200
 
 
+@app.route('/tables', methods=['GET'])
+def get_tables():
+    """
+    :return: all tables (json)
+    """
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
+    rows = cursor.fetchall()
+    return jsonify(rows), 200
+
+
 if __name__ == '__main__':
     app.run(port=8080)

@@ -20,6 +20,12 @@ spec:
           command: [
             "migrate", "-path", "/migrations", "-database", "$(POSTGRESQL_URL)", "goto", "$(VERSION)"
           ]
+          # if happens error "dirty database", do next:
+          #   change "goto" to "force" in command
+          #   switch to any next version
+          #   launch
+          #   revert to "goto"
+          #   launch again. Now itll work
           env:
             - name: POSTGRESQL_URL
               value: "postgres://demo:demo@postgres:5432/flowers?sslmode=disable"

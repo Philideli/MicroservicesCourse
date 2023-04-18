@@ -37,6 +37,11 @@ docker push sosnoviybor/microsevices-migration
 
 
 
+### Helm garbage ###
+helm uninstall local
+helm dep build .\helm\v1\
+helm install local .\helm\v1\
+
 
 --- ### MAC COMMANDS ### ---
 

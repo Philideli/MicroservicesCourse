@@ -1,0 +1,31 @@
+image:
+  repository: sosnoviybor
+  name: microsevices-db2
+  tag: latest
+
+migrations:
+  image:
+    repository: sosnoviybor
+    name: microsevices-migration
+    tag: latest
+  config:
+    POSTGRESQL_URL: "postgres://demo:demo@postgres:5432/flowers?sslmode=disable"
+    VERSION: "000003"
+
+configs:
+  POSTGRES_DB: flowers
+  POSTGRES_HOST: postgres:5432
+
+secrets:
+  POSTGRES_USER: "ZGVtbw==" # demo
+  POSTGRES_PASSWORD: "ZGVtbw==" # demo
+
+service:
+  ports:
+    - port: 8080
+      targetPort: 5000
+      nodePort: 31318   # Service's port which is used in code
+
+ingress:
+  path: /api/links
+  port: http

@@ -1,0 +1,19 @@
+postgresql:
+  fullnameOverride: postgres
+  
+  auth:
+    database: "flowers"
+    username: "demo"
+    password: "demo"
+  primary:
+    persistence:
+      size: 5Gi
+      mountPath: /var/lib/postgresql/data
+
+  # postgresqlDatabase: "flowers"
+  # postgresqlUsername: "demo"
+  # postgresqlPassword: "demo"
+  # postgresqlPostgresPassword: "demo"
+  # persistence:
+  #   size: 5Gi
+  #   mountPath: /var/lib/postgresql/data

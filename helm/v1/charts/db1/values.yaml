@@ -1,0 +1,15 @@
+image:
+  repository: sosnoviybor
+  name: microsevices-db1
+  tag: latest
+
+service:
+  ports:
+    - port: 8080
+      targetPort: 5000
+      nodePort: 31317   # Service's port which is used in code
+
+ingress:
+  path: /
+  class: "db1"
+  port: http
