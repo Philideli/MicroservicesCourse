@@ -1,5 +1,3 @@
--- flowers init. no image edition
-
 CREATE TABLE IF NOT EXISTS "flower" (
 	"id"	SERIAL PRIMARY KEY,
 	"name"	TEXT,

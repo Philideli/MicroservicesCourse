@@ -10,7 +10,7 @@ migrations:
     tag: latest
   config:
     POSTGRESQL_URL: "postgres://demo:demo@postgres:5432/flowers?sslmode=disable"
-    VERSION: "000003"
+    VERSION: "000001"
 
 configs:
   POSTGRES_DB: flowers

@@ -25,8 +25,8 @@ spec:
       initContainers:
         - name: {{ .Values.migrations.image.name }}
           image: {{.Values.migrations.image.repository}}/{{ .Values.migrations.image.name }}:{{ .Values.migrations.image.tag }}
-          imagePullPolicy: "IfNotPresent"
-          command: [ "migrate", "-path", "/migrations", "-database", "$(POSTGRESQL_URL)", "force", "$(VERSION)" ]
+          imagePullPolicy: "Always"
+          command: [ "migrate", "-path", "/migrations", "-database", "$(POSTGRESQL_URL)", "goto", "$(VERSION)" ]
           env:
             - name: POSTGRESQL_URL
               value: {{ .Values.migrations.config.POSTGRESQL_URL | quote }}
