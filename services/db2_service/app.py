@@ -2,7 +2,10 @@ from flask import Flask, jsonify, request, g
 import psycopg2
 from flower import Flower
 
-app = Flask('service2')
+SERVICE_NAME = "db2"
+PREFIX = "/api/" + SERVICE_NAME
+
+app = Flask(SERVICE_NAME)
 
 def get_db_connection():
     conn = psycopg2.connect(
@@ -11,12 +14,12 @@ def get_db_connection():
     return conn
 
 
-@app.route('/')
+@app.route(PREFIX + '/')
 def start_point():
     return "Start service 2 for flowers"
 
 
-@app.route('/flowers/getbyid', methods=['GET'])
+@app.route(PREFIX + '/flowers/getbyid', methods=['GET'])
 def get_flower_by_id():
     """
     :id (str): flower id
@@ -36,7 +39,7 @@ def get_flower_by_id():
         return jsonify({'error': 'Flower not found'}), 404
 
 
-@app.route('/flowers/getbyname', methods=['GET'])
+@app.route(PREFIX + '/flowers/getbyname', methods=['GET'])
 def get_flower_by_name():
     """
     :name (str): flower name
@@ -57,7 +60,7 @@ def get_flower_by_name():
         return jsonify({'error': 'Flower not found'}), 404
 
 
-@app.route('/flowers/add', methods=['POST'])
+@app.route(PREFIX + '/flowers/add', methods=['POST'])
 def add_flower():
     """
     :flower (dict): flower (id, name, color, climate, price, image)
@@ -78,7 +81,7 @@ def add_flower():
     return jsonify({'message': 'Flower added successfully'}), 200
 
 
-@app.route('/flowers/getall', methods=['GET'])
+@app.route(PREFIX + '/flowers/getall', methods=['GET'])
 def get_all_flowers():
     """
     :return: all flowers (json)
@@ -92,7 +95,7 @@ def get_all_flowers():
     return jsonify(flowers), 200
 
 
-@app.route('/db2/tables', methods=['GET'])
+@app.route(PREFIX + '/db2/tables', methods=['GET'])
 def get_tables():
     """
     :return: all tables (json)

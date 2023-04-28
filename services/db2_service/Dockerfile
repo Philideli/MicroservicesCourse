@@ -1,6 +1,6 @@
 FROM python:alpine
 
-EXPOSE 8080
+EXPOSE 5000
 
 WORKDIR /usr/src/app
 

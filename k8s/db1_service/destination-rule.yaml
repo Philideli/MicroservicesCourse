@@ -1,0 +1,13 @@
+# # that circuit breaker thing
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: db1-destination
+spec:
+  host: db1-service
+  trafficPolicy:
+    outlierDetection:
+      consecutive5xxErrors: 5 
+      interval: 10s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 80

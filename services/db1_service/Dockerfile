@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 RUN python3 init_database.py
-CMD [ "python3", "-m" , "flask", "run" ]
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0" ]

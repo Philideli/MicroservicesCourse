@@ -9,8 +9,8 @@ ADMINS = [
     448565207   # @boryaxta
 ]
 
-DB1_ADRESS = "http://db1-service"
-DB2_ADRESS = "http://db2-service"
+DB1_ADRESS = "http://db1-service/api/db1"
+DB2_ADRESS = "http://db2-service/api/db2"
 class Adresses:
     class Clients:
         """Database 1 tables"""

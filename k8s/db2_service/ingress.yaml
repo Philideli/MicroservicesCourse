@@ -8,7 +8,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /db2
+          - path: /api/db2
             pathType: "Prefix"
             backend:
               service:
