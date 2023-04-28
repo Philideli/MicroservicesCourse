@@ -1,4 +1,7 @@
+### Minikube garbage ###
 minikube start --vm-driver=docker
+minikube dashboard
+minikube tunnel
 
 
 ### Launch PostgreSQL DB ###

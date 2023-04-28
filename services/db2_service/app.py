@@ -92,7 +92,7 @@ def get_all_flowers():
     return jsonify(flowers), 200
 
 
-@app.route('/tables', methods=['GET'])
+@app.route('/db2/tables', methods=['GET'])
 def get_tables():
     """
     :return: all tables (json)

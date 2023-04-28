@@ -30,7 +30,7 @@ spec:
             - name: POSTGRESQL_URL
               value: "postgres://demo:demo@postgres:5432/flowers?sslmode=disable"
             - name: VERSION
-              value: "000004"
+              value: "000001"
       containers:
         - name: db2
           image: db2-image

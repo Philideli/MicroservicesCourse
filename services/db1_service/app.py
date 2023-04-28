@@ -3,7 +3,9 @@ import sqlite3
 from sales_database import Client, Order
 from mock_input import clients, orders
 
-app = Flask('service1')
+SERVICE_NAME = "db1"
+
+app = Flask(SERVICE_NAME)
 
 def get_db_connection():
     conn = getattr(g,'_database',None)
@@ -11,11 +13,11 @@ def get_db_connection():
         conn = g._database = sqlite3.connect('sales.db')
     return conn
 
-@app.route('/')
+@app.route(f'/api/{SERVICE_NAME}/')
 def start_point():
     return "Start service 1 for clients and orders"
 
-@app.route('/clients/add', methods=['POST'])
+@app.route(f'/api/{SERVICE_NAME}/clients/add', methods=['POST'])
 def add_client():
     """ add new client to database
         Args:
@@ -38,7 +40,7 @@ def add_client():
     
     return jsonify({'message': 'Client added successfully'}), 200
 
-@app.route('/clients/getbyid', methods=['GET'])
+@app.route(f'/api/{SERVICE_NAME}/clients/getbyid', methods=['GET'])
 def get_client():
     """ get client by id from database
         Args:
@@ -60,7 +62,7 @@ def get_client():
     else:
         return jsonify({'error': 'Client not found'}), 404
 
-@app.route('/clients/getall', methods=['GET'])
+@app.route(f'/api/{SERVICE_NAME}/clients/getall', methods=['GET'])
 def get_all_clients():
     """ get all clients from database
         Returns:
@@ -75,7 +77,7 @@ def get_all_clients():
     clients = [vars(client) for client in clients]
     return jsonify(clients), 200
 
-@app.route('/orders/add', methods=['POST'])
+@app.route(f'/api/{SERVICE_NAME}/orders/add', methods=['POST'])
 def add_order():
     """ add new order to database
         Args:
@@ -98,7 +100,7 @@ def add_order():
     db.commit()
     return jsonify({'message': 'Order added successfully'}), 200
 
-@app.route('/orders/getbyid', methods=['GET'])
+@app.route(f'/api/{SERVICE_NAME}/orders/getbyid', methods=['GET'])
 def get_order():
     """ get order by id from database
         Args:
@@ -120,7 +122,7 @@ def get_order():
     else:
         return jsonify({'error': 'Order not found'}), 404
 
-@app.route('/orders/getall', methods=['GET'])
+@app.route(f'/api/{SERVICE_NAME}/orders/getall', methods=['GET'])
 def get_all_orders():
     """ get all orders from database
         Returns:
@@ -135,7 +137,7 @@ def get_all_orders():
     orders = [vars(order) for order in orders]
     return jsonify(orders), 200
 
-@app.route('/orders/getbyclient', methods=['GET'])
+@app.route(f'/api/{SERVICE_NAME}/orders/getbyclient', methods=['GET'])
 def get_all_orders_for_client():
     """ get all orders made by the client from database
         Returns:
@@ -158,4 +160,4 @@ def get_all_orders_for_client():
     #     return jsonify({'error': 'An error occurred while retrieving the orders'}), 500
 
 if __name__ == '__main__':
-    app.run(port=8080)
+    app.run(port=5000)
