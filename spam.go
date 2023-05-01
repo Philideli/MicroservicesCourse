@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const URL = "http://localhost/api/db1"
+const URL = "http://localhost/api/db1/test"
 
 var concurrentRequests = 100
 var errCount = 0

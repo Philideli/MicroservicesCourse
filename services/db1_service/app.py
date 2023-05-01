@@ -180,10 +180,10 @@ def start_point():
 def start_point():
     if is_pod_broken:
         is_pod_broken = True
-        return "Pod was sucessfully broken"
+        return "Pod was successfully broken"
     else:
         is_pod_broken = False
-        return "Pod was sucessfully fixed"
+        return "Pod was successfully fixed"
 
 
 if __name__ == '__main__':
