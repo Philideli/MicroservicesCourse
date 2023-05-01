@@ -5,7 +5,7 @@ metadata:
   labels:
     app: db1
 spec:
-  replicas: 1
+  replicas: 2   # DONT FORGET TO DECREASE IT!!!
   selector:
     matchLabels:
       app: db1
