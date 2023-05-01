@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, g
 import sqlite3
 from sales_database import Client, Order
 from mock_input import clients, orders
+from time import sleep
 
 SERVICE_NAME = "db1"
 PREFIX = "/api/" + SERVICE_NAME
@@ -159,6 +160,31 @@ def get_all_orders_for_client():
         return jsonify({'message': f'No orders found for client {client_id}'}), 200
     # except:
     #     return jsonify({'error': 'An error occurred while retrieving the orders'}), 500
+
+
+""" Lab 4 things """
+
+is_pod_broken = False
+BROKEN_POD_COOLDOWN = 10    # in secs
+
+# /api/db1/test
+@app.route(PREFIX + '/test')
+def start_point():
+    if is_pod_broken:
+        sleep(BROKEN_POD_COOLDOWN)
+        return "Oh no! I am soooooo slow!"
+    return "Yup, im completely fine and fast guy"
+
+# /api/db1/break
+@app.route(PREFIX + '/break')
+def start_point():
+    if is_pod_broken:
+        is_pod_broken = True
+        return "Pod was sucessfully broken"
+    else:
+        is_pod_broken = False
+        return "Pod was sucessfully fixed"
+
 
 if __name__ == '__main__':
     # this port parameter doesn't do SHIT
