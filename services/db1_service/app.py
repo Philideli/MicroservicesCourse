@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, request, g
 import sqlite3
+from time import sleep
+
 from sales_database import Client, Order
 from mock_input import clients, orders
-from time import sleep
 
 SERVICE_NAME = "db1"
 PREFIX = "/api/" + SERVICE_NAME

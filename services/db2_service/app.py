@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request, g
 import psycopg2
+import requests
+
 from flower import Flower
 
 SERVICE_NAME = "db2"
@@ -105,6 +107,20 @@ def get_tables():
     cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
     rows = cursor.fetchall()
     return jsonify(rows), 200
+
+
+""" Lab  4 things """
+
+# /api/db2/ping
+@app.route(PREFIX + '/ping')
+def start_point():
+    res = requests.get(url="http://localhost/api/db1/test")
+    if res.status_code == 200:
+        return "Pong (success)"
+    else:
+        return "Not pong, something went wrong... :(\n" + \
+              f"Response code is {res.status_code}"
+
 
 
 if __name__ == '__main__':
