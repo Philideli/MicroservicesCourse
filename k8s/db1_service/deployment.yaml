@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: db1
-          image: db1-image
-          imagePullPolicy: Never
+          # image: db1-image
+          image: sosnoviybor/microsevices-db1
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000

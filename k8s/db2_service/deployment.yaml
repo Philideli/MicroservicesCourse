@@ -33,8 +33,9 @@ spec:
               value: "000001"
       containers:
         - name: db2
-          image: db2-image
-          imagePullPolicy: Never
+          # image: db2-image
+          image: sosnoviybor/microsevices-db2
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           envFrom:

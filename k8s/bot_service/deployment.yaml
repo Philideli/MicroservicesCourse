@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: bot
-          image: bot-image
-          imagePullPolicy: Never
+          # image: bot-image
+          image: sosnoviybor/microsevices-bot
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
