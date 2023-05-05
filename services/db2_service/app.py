@@ -113,7 +113,7 @@ def get_tables():
 
 # /api/db2/ping
 @app.route(PREFIX + '/ping')
-def start_point():
+def ping():
     res = requests.get(url="http://localhost/api/db1/test")
     if res.status_code == 200:
         return "Pong (success)"

@@ -170,7 +170,7 @@ BROKEN_POD_COOLDOWN = 10    # in secs
 
 # /api/db1/test
 @app.route(PREFIX + '/test')
-def start_point():
+def test():
     if is_pod_broken:
         sleep(BROKEN_POD_COOLDOWN)
         return "Oh no! I am soooooo slow!"
@@ -178,7 +178,7 @@ def start_point():
 
 # /api/db1/break
 @app.route(PREFIX + '/break')
-def start_point():
+def breaker():
     if is_pod_broken:
         is_pod_broken = True
         return "Pod was successfully broken"
