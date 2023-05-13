@@ -4,10 +4,6 @@ minikube dashboard
 minikube tunnel
 
 
-### Launch PostgreSQL DB ###
-.\kubectl.exe apply -f .\k8s\postgres\
-
-
 ### Kill all deployments and services ###
 .\kubectl.exe delete deployment db1-deployment
 .\kubectl.exe delete service db1-service
@@ -30,6 +26,7 @@ minikube.exe image load db2-image
 .\kubectl.exe apply -f .\k8s\db1_service\
 .\kubectl.exe apply -f .\k8s\db2_service\
 .\kubectl.exe apply -f .\k8s\bot_service\
+.\kubectl.exe apply -f .\k8s\postgres\
 
 
 ### Push migration to Docker Hub ###
